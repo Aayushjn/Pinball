@@ -1,2 +1,2 @@
-# CG-Project-IT-254-
-Pinball game implementation in C++ from scratch
+# CG Project IT254
+Pinball game implementation in C++ from scratch (OpenGL)
