@@ -1,13 +1,18 @@
 #include <windows.h>
 #include <GL/glut.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+#include <time.h>
 
-#include "functions.h"
+// Macros
+#define PI 3.14159625f
 
 // Global variables
 
 GLfloat radius = 0.05f;
-GLfloat ballX = 1.77f;
-GLfloat ballY = 0.77f;
+GLfloat ballX = 1.8f;
+GLfloat ballY = -0.8f;
 GLfloat ballXMax, ballXMin, ballYMax, ballYMin;
 GLfloat xSpeed = 0.0005f;
 GLfloat ySpeed = 0.0007f;
@@ -24,10 +29,13 @@ void renderScene();
 
 // Helper functions
 void timer(int);
+void launchBall();
 void bounceBall();
 bool isFinished(GLfloat, GLfloat);
 
 int main(int argc, char **argv){
+    srand(time(0));
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowSize(1500, 750);
@@ -85,6 +93,7 @@ void reshape(GLsizei width, GLsizei height){
 
 void keyPressed(unsigned char c, int x, int y){
     if(c == 32){
+        launchBall();
         bounceBall();
     }
 }
@@ -92,7 +101,6 @@ void keyPressed(unsigned char c, int x, int y){
 void renderScene(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // TODO: Draw all the colliding objects
-    // TODO: Launch ball function
 }
 
 void timer(int value){
@@ -100,7 +108,35 @@ void timer(int value){
     glutTimerFunc(refreshMillis, timer, 0);
 }
 
+void launchBall(){
+    alpha = 1.0f;
+    do{
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+
+        glPushMatrix();
+        glTranslatef(ballX, ballY, 0.0f);
+        glBegin(GL_TRIANGLE_FAN);
+            glColor4f(0.0f, 0.0f, 1.0f, alpha);
+            glVertex2f(0.0f, 0.0f);
+            int segments = 100;
+            GLfloat angle;
+            for(int i = 0;i <= segments;i++){
+                angle = i * 2.0f * PI / segments;
+                glVertex2f(cos(angle) * radius, sin(angle) * radius);
+            }
+        glEnd();
+        glPopMatrix();
+
+        glutSwapBuffers();
+
+        ballY += ySpeed;
+    }while(ballY < 0.8f);
+}
+
 void bounceBall(){
+    int quadrant = (rand() % 4) + 1;
     do{
         finished = isFinished(ballX, ballY);
         if(finished){
@@ -131,8 +167,27 @@ void bounceBall(){
 
         glutSwapBuffers();
 
-        ballX -= xSpeed;
-        ballY -= ySpeed;
+        switch(quadrant){
+            case 1:
+                ballX += xSpeed;
+                ballY += ySpeed;
+            break;
+            case 2:
+                ballX -= xSpeed;
+                ballY += ySpeed;
+            break;
+            case 3:
+                ballX -= xSpeed;
+                ballY -= ySpeed;
+            break;
+            case 4:
+                ballX += xSpeed;
+                ballY -= ySpeed;
+            break;
+            default:
+                printf("rand() error");
+        }
+
         if(ballX > ballXMax){
             ballX = ballXMax;
             xSpeed = -xSpeed;
@@ -153,7 +208,7 @@ void bounceBall(){
 }
 
 bool isFinished(GLfloat x, GLfloat y){
-    if(x >= ballXMin/3 && x <= ballXMax/3 && y == ballYMin){
+    if(x >= ballXMin / 3 && x <= ballXMax / 3 && y == ballYMin){
         return true;
     }
     return false;
