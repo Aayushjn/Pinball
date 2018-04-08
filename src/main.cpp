@@ -55,7 +55,7 @@ int main(int argc, char **argv){
 // Function definitions
 
 void initOpenGL(){
-    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glClearColor(0.0, 0.0, 0.0, 1.0);
     gluOrtho2D(-750.0, 750.0, -375.0, 375.0);
     glColor4f(0.0f, 0.0f, 1.0f, alpha);
     glEnable(GL_BLEND);
@@ -110,6 +110,10 @@ void timer(int value){
 
 void launchBall(){
     alpha = 1.0f;
+    ballX = 1.8f;
+    ballY = -0.8f;
+    xSpeed = fabs(xSpeed);
+    ySpeed = fabs(ySpeed);
     do{
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glMatrixMode(GL_MODELVIEW);
