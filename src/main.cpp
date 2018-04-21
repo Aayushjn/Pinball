@@ -61,8 +61,10 @@ void timer(int value){
 
 void renderScene(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    drawBoundaries();
     flipperRotation();
     launchBall();
     bounceBall();
+    //detect_collision();
     glutSwapBuffers();
 }
