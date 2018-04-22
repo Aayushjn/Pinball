@@ -2,8 +2,10 @@
 #include <GL/glut.h>
 #include "functions.h"
 
-GLfloat alpha = 1.0f;
+// Refresh time (16 ms --> ~60fps)
+unsigned int refreshTime = 16;
 
+// Function declarations
 void initOpenGL();
 void timer(int);
 void reshape(GLsizei, GLsizei);
@@ -33,9 +35,7 @@ int main(int argc, char **argv){
 void initOpenGL(){
     glClearColor(0.0, 0.0, 0.0, 1.0);
     gluOrtho2D(-750.0, 750.0, -375.0, 375.0);
-    glColor4f(0.0f, 0.0f, 1.0f, alpha);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glColor3f(0.0f, 0.0f, 1.0f);
 }
 
 void reshape(GLsizei width, GLsizei height){
@@ -56,7 +56,7 @@ void keyPressed(unsigned char c, int x, int y){
 
 void timer(int value){
     glutPostRedisplay();
-    glutTimerFunc(16, timer, 0);
+    glutTimerFunc(refreshTime, timer, 0);
 }
 
 void renderScene(){
